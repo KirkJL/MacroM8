@@ -49,9 +49,13 @@
 </head>
 <body>
   <h1>🥗 MacroMate</h1>
-  <h2>Simple Macro Calculator on a Budget</h2><label for="weight">Current Weight (kg):</label> <input type="number" id="weight" />
+  <h2>Simple Macro Calculator on a Budget</h2><label for="gender">Gender:</label> <select id="gender"> <option value="male">Male</option> <option value="female">Female</option> </select>
+
+<label for="weight">Current Weight (kg):</label> <input type="number" id="weight" />
 
 <label for="goalWeight">Goal Weight (kg):</label> <input type="number" id="goalWeight" />
+
+<label for="height">Height (cm):</label> <input type="number" id="height" />
 
 <label for="activity">Activity Level:</label> <select id="activity"> <option value="1.2">Sedentary</option> <option value="1.375">Light</option> <option value="1.55">Moderate</option> <option value="1.725">Intense</option> </select>
 
@@ -61,15 +65,25 @@
 
   <div class="output" id="output"></div>  <script>
     function calculateMacros() {
+      const gender = document.getElementById('gender').value;
       const weight = parseFloat(document.getElementById('weight').value);
       const goalWeight = parseFloat(document.getElementById('goalWeight').value);
+      const height = parseFloat(document.getElementById('height').value);
       const activity = parseFloat(document.getElementById('activity').value);
       const steps = document.getElementById('steps').checked;
       const training = document.getElementById('training').checked;
       const carbCycling = document.getElementById('carbCycling').checked;
 
-      // BMR Calculation (Mifflin-St Jeor, simplified)
-      const bmr = 10 * weight + 6.25 * 170 - 5 * 30 + 5; // avg height & age
+      // BMR Calculation (Mifflin-St Jeor)
+      const age = 30; // placeholder, could be added later
+      let bmr;
+
+      if (gender === 'male') {
+        bmr = 10 * weight + 6.25 * height - 5 * age + 5;
+      } else {
+        bmr = 10 * weight + 6.25 * height - 5 * age - 161;
+      }
+
       let tdee = bmr * activity;
       if (steps) tdee += 300;
 
