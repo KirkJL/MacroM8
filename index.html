@@ -1,0 +1,107 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MacroMate - Diet Macro Calculator</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 2rem;
+      max-width: 700px;
+      margin: auto;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.3rem;
+    }
+    .output {
+      background: #fff;
+      padding: 1rem;
+      margin-top: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    button {
+      padding: 1rem;
+      background: #2d89ef;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      margin-top: 2rem;
+      cursor: pointer;
+      width: 100%;
+    }
+    button:hover {
+      background: #2163b3;
+    }
+  </style>
+</head>
+<body>
+  <h1>🥗 MacroMate</h1>
+  <h2>Simple Macro Calculator on a Budget</h2><label for="weight">Current Weight (kg):</label> <input type="number" id="weight" />
+
+<label for="goalWeight">Goal Weight (kg):</label> <input type="number" id="goalWeight" />
+
+<label for="activity">Activity Level:</label> <select id="activity"> <option value="1.2">Sedentary</option> <option value="1.375">Light</option> <option value="1.55">Moderate</option> <option value="1.725">Intense</option> </select>
+
+<label><input type="checkbox" id="steps" /> 12k Daily Steps</label> <label><input type="checkbox" id="training" /> Weight Training</label> <label><input type="checkbox" id="carbCycling" /> Carb Cycling</label>
+
+<button onclick="calculateMacros()">Calculate</button>
+
+  <div class="output" id="output"></div>  <script>
+    function calculateMacros() {
+      const weight = parseFloat(document.getElementById('weight').value);
+      const goalWeight = parseFloat(document.getElementById('goalWeight').value);
+      const activity = parseFloat(document.getElementById('activity').value);
+      const steps = document.getElementById('steps').checked;
+      const training = document.getElementById('training').checked;
+      const carbCycling = document.getElementById('carbCycling').checked;
+
+      // BMR Calculation (Mifflin-St Jeor, simplified)
+      const bmr = 10 * weight + 6.25 * 170 - 5 * 30 + 5; // avg height & age
+      let tdee = bmr * activity;
+      if (steps) tdee += 300;
+
+      // Adjust for goal
+      const goal = goalWeight < weight ? 'cutting' : goalWeight > weight ? 'bulking' : 'maintain';
+      if (goal === 'cutting') tdee -= 400;
+      if (goal === 'bulking') tdee += 250;
+
+      // Macro split
+      const protein = training ? weight * 2.2 : weight * 1.8;
+      const fats = weight * 0.8;
+      const proteinCals = protein * 4;
+      const fatCals = fats * 9;
+      const carbs = (tdee - proteinCals - fatCals) / 4;
+
+      const output = `
+        <h3>Goal: ${goal.toUpperCase()}</h3>
+        <p><strong>Calories/day:</strong> ${Math.round(tdee)}</p>
+        <p><strong>Protein:</strong> ${Math.round(protein)}g</p>
+        <p><strong>Fats:</strong> ${Math.round(fats)}g</p>
+        <p><strong>Carbs:</strong> ${Math.round(carbs)}g</p>
+        <h4>💡 Sample Budget Meal Plan</h4>
+        <ul>
+          <li>Oats + Peanut Butter + Banana</li>
+          <li>Eggs + Rice + Mixed Veg</li>
+          <li>Tuna + Pasta + Olive Oil</li>
+          <li>Greek Yogurt + Frozen Berries</li>
+        </ul>
+        <p>Total cost: ~£4/day</p>
+      `;
+
+      document.getElementById('output').innerHTML = output;
+    }
+  </script></body>
+</html>
