@@ -182,7 +182,7 @@
 
   <div id="results"></div>
 </div>
-<script>
+  <script>
   function calculateMacros() {
     // Get form values
     const gender = document.getElementById('gender').value;
@@ -277,16 +277,21 @@
       <p><em>${goalWeight < currentWeight ? 'Cutting: 20% calorie deficit applied' : goalWeight > currentWeight ? 'Bulking: 15% calorie surplus applied' : 'Maintenance: No calorie adjustment'}</em></p>
     `;
 
-    // Create meal plan HTML list
+    // Create meal plan HTML list, now with total calories per meal
     let mealPlanHTML = `
       <div class="meal-plan">
         <h4>Budget-Friendly Meal Plan</h4>
         <ul>
           ${mealPlan
-            .map(
-              meal =>
-                `<li><strong>${meal.name}:</strong> ${meal.protein}g Protein, ${meal.fats}g Fat, ${meal.carbs}g Carbs</li>`
-            )
+            .map(meal => {
+              // Calculate total calories for the meal
+              const mealCalories = meal.protein * 4 + meal.fats * 9 + meal.carbs * 4;
+              return `<li>
+                <strong>${meal.name}:</strong> 
+                ${meal.protein}g Protein, ${meal.fats}g Fat, ${meal.carbs}g Carbs
+                (<strong>${mealCalories} kcal</strong>)
+              </li>`;
+            })
             .join('')}
         </ul>
       </div>
@@ -331,7 +336,7 @@
       },
     ];
   }
-</script>
+  </script>
 </body>
 </html>
   
