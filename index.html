@@ -1,7 +1,8 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>SaladMate - Diet Macro Calculator</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
@@ -11,13 +12,12 @@
     }
     body {
       margin: 0;
-      padding: 0;
+      padding: 40px 20px;
       background: #f3f4f6;
       color: #111827;
       display: flex;
       justify-content: center;
       align-items: flex-start;
-      padding: 40px 20px;
     }
     .container {
       background: white;
@@ -36,6 +36,7 @@
       display: flex;
       gap: 20px;
       margin-bottom: 20px;
+      flex-wrap: wrap;
     }
     .row label {
       flex: 1;
@@ -88,25 +89,25 @@
 <body>
   <div class="container">
     <h1>SaladMate - Diet Macro Calculator</h1>
-    <form>
+    <form onsubmit="event.preventDefault(); calculateMacros();">
       <div class="row">
         <label>
-          <select name="gender">
+          <select name="gender" id="gender">
             <option value="" disabled selected>Sex</option>
             <option value="male">Male</option>
             <option value="female">Female</option>
           </select>
         </label>
         <label>
-          <input type="number" name="height" placeholder="Height (cm)" required />
+          <input type="number" name="height" id="height" placeholder="Height (cm)" required />
         </label>
       </div>
       <div class="row">
         <label>
-          <input type="number" name="currentWeight" placeholder="Current Weight (kg)" required />
+          <input type="number" name="currentWeight" id="currentWeight" placeholder="Current Weight (kg)" required />
         </label>
         <label>
-          <input type="number" name="goalWeight" placeholder="Goal Weight (kg)" required />
+          <input type="number" name="goalWeight" id="goalWeight" placeholder="Goal Weight (kg)" required />
         </label>
       </div>
       <div class="checkbox-group">
@@ -121,6 +122,50 @@
       </div>
       <button type="submit">Calculate</button>
     </form>
+    <div id="results" style="margin-top: 24px;"></div>
   </div>
+
+  <script>
+    function calculateMacros() {
+      const gender = document.getElementById("gender").value;
+      const height = parseFloat(document.getElementById("height").value);
+      const currentWeight = parseFloat(document.getElementById("currentWeight").value);
+      const goalWeight = parseFloat(document.getElementById("goalWeight").value);
+      const weightTraining = document.getElementById("weightTraining").checked;
+      const steps = document.getElementById("steps").checked;
+
+      // Input check
+      if (!gender || isNaN(height) || isNaN(currentWeight) || isNaN(goalWeight)) {
+        alert("Please fill in all fields.");
+        return;
+      }
+
+      // BMR Calculation (using 30 as a placeholder age)
+      let bmr;
+      if (gender === "male") {
+        bmr = 10 * currentWeight + 6.25 * height - 5 * 30 + 5;
+      } else {
+        bmr = 10 * currentWeight + 6.25 * height - 5 * 30 - 161;
+      }
+
+      // Adjust for activity
+      let activityFactor = 1.2;
+      if (steps) activityFactor += 0.2;
+      if (weightTraining) activityFactor += 0.3;
+
+      const dailyCalories = Math.round(bmr * activityFactor);
+      const protein = Math.round(goalWeight * 2); // 2g protein per kg goal weight
+      const fats = Math.round(goalWeight * 1);     // 1g fat per kg goal weight
+      const carbs = Math.round((dailyCalories - (protein * 4 + fats * 9)) / 4);
+
+      document.getElementById("results").innerHTML = `
+        <h3>Results</h3>
+        <p><strong>Daily Calories:</strong> ${dailyCalories} kcal</p>
+        <p><strong>Protein:</strong> ${protein}g</p>
+        <p><strong>Fats:</strong> ${fats}g</p>
+        <p><strong>Carbs:</strong> ${carbs}g</p>
+      `;
+    }
+  </script>
 </body>
 </html>
