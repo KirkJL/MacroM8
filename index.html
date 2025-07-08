@@ -32,9 +32,22 @@
     .form-row {
       display: flex;
       gap: 1rem;
+      margin-top: 1rem;
     }
     .form-row > div {
       flex: 1;
+    }
+    .checkbox-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      margin-top: 1.5rem;
+    }
+    .checkbox-row label {
+      display: flex;
+      align-items: center;
+      font-weight: normal;
+      gap: 0.5rem;
     }
     .output {
       background: #fff;
@@ -90,9 +103,11 @@
         <option value="1.725">Intense</option>
       </select>
     </div>
-  </div><label><input type="checkbox" id="steps" /> 12k Daily Steps</label> <label><input type="checkbox" id="training" /> Weight Training</label> <label><input type="checkbox" id="carbCycling" /> Carb Cycling</label>
-
-<button onclick="calculateMacros()">Calculate</button>
+  </div>  <div class="checkbox-row">
+    <label><input type="checkbox" id="steps" /> 12k Daily Steps</label>
+    <label><input type="checkbox" id="training" /> Weight Training</label>
+    <label><input type="checkbox" id="carbCycling" /> Carb Cycling</label>
+  </div><button onclick="calculateMacros()">Calculate</button>
 
   <div class="output" id="output"></div>  <script>
     function calculateMacros() {
