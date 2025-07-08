@@ -3,171 +3,128 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MacroMate - Diet Macro Calculator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #eef2f7;
-      margin: 0;
-      padding: 2rem;
-      max-width: 800px;
-      margin: auto;
-      color: #333;
-    }
-    h1, h2 {
-      text-align: center;
-      color: #2d89ef;
-    }
-    label {
-      display: block;
-      margin-top: 1rem;
-      font-weight: bold;
-    }
-    input, select {
-      width: 100%;
-      padding: 0.6rem;
-      margin-top: 0.3rem;
-      border: 1px solid #ccc;
-      border-radius: 5px;
+    * {
       box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
     }
-    .form-row {
+    body {
+      margin: 0;
+      padding: 0;
+      background: #f3f4f6;
+      color: #111827;
       display: flex;
-      gap: 1rem;
-      margin-top: 1rem;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 40px 20px;
     }
-    .form-row > div {
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      max-width: 600px;
+      width: 100%;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      font-size: 28px;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+    .input-group {
+      margin-bottom: 20px;
+      display: flex;
+      gap: 20px;
+    }
+    .input-group label {
       flex: 1;
-    }
-    .checkbox-row {
       display: flex;
-      justify-content: space-between;
-      margin-top: 2rem;
-      gap: 1rem;
+      flex-direction: column;
+      font-weight: 600;
     }
-    .checkbox-row label {
+    label input, label select {
+      padding: 10px;
+      margin-top: 8px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+    }
+    .checkbox-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .checkbox-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      flex: 1;
-      background: #fff;
-      padding: 0.8rem 1rem;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-      font-weight: normal;
+      padding: 12px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
     }
-    .output {
-      background: #fff;
-      padding: 1.5rem;
-      margin-top: 2rem;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    .checkbox-item label {
+      font-weight: 500;
+    }
+    .checkbox-item input[type="checkbox"] {
+      transform: scale(1.2);
     }
     button {
-      padding: 1rem;
-      background: #2d89ef;
+      background: #2563eb;
       color: white;
-      font-weight: bold;
+      padding: 12px;
       border: none;
       border-radius: 8px;
-      margin-top: 2rem;
+      font-weight: 600;
       cursor: pointer;
       width: 100%;
-      font-size: 1rem;
     }
     button:hover {
-      background: #1a64c2;
-    }
-    ul {
-      padding-left: 1.2rem;
+      background: #1e40af;
     }
   </style>
 </head>
 <body>
-  <h1>🥗 MacroMate</h1>
-  <h2>Simple Macro Calculator on a Budget</h2><label for="gender">Gender:</label> <select id="gender"> <option value="male">Male</option> <option value="female">Female</option> </select>
-
-  <div class="form-row">
-    <div>
-      <label for="weight">Current Weight (kg):</label>
-      <input type="number" id="weight" />
+  <div class="container">
+    <h1>MacroMate - Diet Macro Calculator</h1>
+    <form>
+      <div class="input-group">
+        <label>
+          Gender
+          <select name="gender">
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          </select>
+        </label>
+        <label>
+          Height (cm)
+          <input type="number" name="height" required />
+        </label>
+      </div>
+      <div class="input-group">
+        <label>
+          Current Weight (kg)
+          <input type="number" name="currentWeight" required />
+        </label>
+        <label>
+          Goal Weight (kg)
+          <input type="number" name="goalWeight" required />
+        </label>
+      </div><div class="checkbox-group">
+    <div class="checkbox-item">
+      <label for="weightTraining">Include Weight Training</label>
+      <input type="checkbox" id="weightTraining" name="weightTraining" />
     </div>
-    <div>
-      <label for="goalWeight">Goal Weight (kg):</label>
-      <input type="number" id="goalWeight" />
+    <div class="checkbox-item">
+      <label for="steps">12K Daily Steps</label>
+      <input type="checkbox" id="steps" name="steps" />
     </div>
-  </div>  <div class="form-row">
-    <div>
-      <label for="height">Height (cm):</label>
-      <input type="number" id="height" />
-    </div>
-    <div>
-      <label for="activity">Activity Level:</label>
-      <select id="activity">
-        <option value="1.2">Sedentary</option>
-        <option value="1.375">Light</option>
-        <option value="1.55">Moderate</option>
-        <option value="1.725">Intense</option>
-      </select>
-    </div>
-  </div>  <div class="checkbox-row">
-    <label>12k Daily Steps <input type="checkbox" id="steps" /></label>
-    <label>Weight Training <input type="checkbox" id="training" /></label>
-    <label>Carb Cycling <input type="checkbox" id="carbCycling" /></label>
-  </div><button onclick="calculateMacros()">Calculate</button>
+  </div>
 
-  <div class="output" id="output"></div>  <script>
-    function calculateMacros() {
-      const gender = document.getElementById('gender').value;
-      const weight = parseFloat(document.getElementById('weight').value);
-      const goalWeight = parseFloat(document.getElementById('goalWeight').value);
-      const height = parseFloat(document.getElementById('height').value);
-      const activity = parseFloat(document.getElementById('activity').value);
-      const steps = document.getElementById('steps').checked;
-      const training = document.getElementById('training').checked;
-      const carbCycling = document.getElementById('carbCycling').checked;
+  <button type="submit">Calculate</button>
+</form>
 
-      // BMR Calculation (Mifflin-St Jeor)
-      const age = 30; // placeholder
-      let bmr;
-      if (gender === 'male') {
-        bmr = 10 * weight + 6.25 * height - 5 * age + 5;
-      } else {
-        bmr = 10 * weight + 6.25 * height - 5 * age - 161;
-      }
-
-      let tdee = bmr * activity;
-      if (steps) tdee += 300;
-
-      // Adjust for goal
-      const goal = goalWeight < weight ? 'cutting' : goalWeight > weight ? 'bulking' : 'maintain';
-      if (goal === 'cutting') tdee -= 400;
-      if (goal === 'bulking') tdee += 250;
-
-      // Macro split
-      const protein = training ? weight * 2.2 : weight * 1.8;
-      const fats = weight * 0.8;
-      const proteinCals = protein * 4;
-      const fatCals = fats * 9;
-      const carbs = (tdee - proteinCals - fatCals) / 4;
-
-      const output = `
-        <h3>Goal: ${goal.toUpperCase()}</h3>
-        <p><strong>Calories/day:</strong> ${Math.round(tdee)}</p>
-        <p><strong>Protein:</strong> ${Math.round(protein)}g</p>
-        <p><strong>Fats:</strong> ${Math.round(fats)}g</p>
-        <p><strong>Carbs:</strong> ${Math.round(carbs)}g</p>
-        <h4>💡 Sample Budget Meal Plan</h4>
-        <ul>
-          <li>Oats + Peanut Butter + Banana</li>
-          <li>Eggs + Rice + Mixed Veg</li>
-          <li>Tuna + Pasta + Olive Oil</li>
-          <li>Greek Yogurt + Frozen Berries</li>
-        </ul>
-        <p>Total cost: ~£4/day</p>
-      `;
-
-      document.getElementById('output').innerHTML = output;
-    }
-  </script></body>
+  </div>
+</body>
 </html>
