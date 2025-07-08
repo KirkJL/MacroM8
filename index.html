@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>MacroM8 - Diet Macro Calculator</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
   <style>
     * {
       box-sizing: border-box;
@@ -12,13 +12,12 @@
     }
     body {
       margin: 0;
-      padding: 0;
+      padding: 40px 20px;
       background: #f3f4f6;
       color: #111827;
       display: flex;
       justify-content: center;
       align-items: flex-start;
-      padding: 40px 20px;
     }
     .container {
       background: white;
@@ -32,7 +31,7 @@
       font-size: 28px;
       margin-bottom: 24px;
       text-align: center;
-      color: #2563eb;
+      color: #2563eb; /* blue header */
     }
     .row {
       display: flex;
@@ -51,138 +50,212 @@
       margin-top: 8px;
       border: 1px solid #d1d5db;
       border-radius: 8px;
+      font-size: 16px;
     }
     .checkbox-group {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 16px;
       margin-bottom: 24px;
     }
     .checkbox-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 12px;
+      padding: 12px 16px;
       background: #f9fafb;
       border: 1px solid #e5e7eb;
       border-radius: 8px;
+      font-weight: 500;
+      font-size: 16px;
     }
     .checkbox-item label {
-      font-weight: 500;
+      order: 1;
+      margin-left: 0;
     }
     .checkbox-item input[type="checkbox"] {
+      order: 2;
       transform: scale(1.2);
-      margin-left: 10px;
+      margin-left: 8px;
+      cursor: pointer;
     }
     button {
       background: #2563eb;
       color: white;
-      padding: 12px;
+      padding: 14px;
       border: none;
       border-radius: 8px;
       font-weight: 600;
       cursor: pointer;
       width: 100%;
+      font-size: 18px;
+      transition: background-color 0.3s ease;
     }
     button:hover {
       background: #1e40af;
+    }
+    #results {
+      margin-top: 28px;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+    #results h3 {
+      margin-bottom: 12px;
+      color: #2563eb;
+    }
+    .meal-plan {
+      margin-top: 12px;
+      background: #eef4ff;
+      padding: 16px;
+      border-radius: 10px;
+      border: 1px solid #c1d1ff;
+    }
+    .meal-plan h4 {
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #1d4ed8;
+    }
+    .meal-plan ul {
+      list-style-type: disc;
+      margin-left: 20px;
+      padding-left: 0;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>🥗MacroM8 - Diet Macro Calculator</h1>
-    <form onsubmit="event.preventDefault(); calculateMacros();">
+    <h1>MacroM8 - Diet Macro Calculator</h1>
+    <form id="macroForm" onsubmit="event.preventDefault(); calculateMacros();">
       <div class="row">
         <label>
-          <select name="gender" id="gender" required>
+          <select id="gender" required>
             <option value="" disabled selected>Sex</option>
             <option value="male">Male</option>
             <option value="female">Female</option>
           </select>
         </label>
         <label>
-          <input type="number" name="height" id="height" placeholder="Height (cm)" required />
+          <input type="number" id="height" placeholder="Height (cm)" required min="50" max="250" />
         </label>
       </div>
       <div class="row">
         <label>
-          <input type="number" name="currentWeight" id="currentWeight" placeholder="Current Weight (kg)" required />
+          <input type="number" id="currentWeight" placeholder="Current Weight (kg)" required min="20" max="300" />
         </label>
         <label>
-          <input type="number" name="goalWeight" id="goalWeight" placeholder="Goal Weight (kg)" required />
+          <input type="number" id="goalWeight" placeholder="Goal Weight (kg)" required min="20" max="300" />
         </label>
       </div>
       <div class="checkbox-group">
         <div class="checkbox-item">
           <label for="weightTraining">Include Weight Training</label>
-          <input type="checkbox" id="weightTraining" name="weightTraining" />
+          <input type="checkbox" id="weightTraining" />
         </div>
         <div class="checkbox-item">
           <label for="steps">12K Daily Steps</label>
-          <input type="checkbox" id="steps" name="steps" />
+          <input type="checkbox" id="steps" />
         </div>
       </div>
       <button type="submit">Calculate</button>
     </form>
-    <div id="results" style="margin-top: 24px;"></div>
+    <div id="results"></div>
   </div>
 
   <script>
     function calculateMacros() {
-      const gender = document.getElementById("gender").value;
-      const height = parseFloat(document.getElementById("height").value);
-      const currentWeight = parseFloat(document.getElementById("currentWeight").value);
-      const goalWeight = parseFloat(document.getElementById("goalWeight").value);
-      const weightTraining = document.getElementById("weightTraining").checked;
-      const steps = document.getElementById("steps").checked;
+      const gender = document.getElementById('gender').value;
+      const height = parseFloat(document.getElementById('height').value);
+      const currentWeight = parseFloat(document.getElementById('currentWeight').value);
+      const goalWeight = parseFloat(document.getElementById('goalWeight').value);
+      const weightTraining = document.getElementById('weightTraining').checked;
+      const steps = document.getElementById('steps').checked;
 
       if (!gender || !height || !currentWeight || !goalWeight) {
-        alert("Please fill in all fields.");
+        alert('Please fill in all fields correctly.');
         return;
       }
 
+      // Calculate BMR using Mifflin-St Jeor Equation
+      // Assuming age fixed at 30 for simplicity as age input not requested
+      const age = 30;
       let bmr;
-      if (gender === "male") {
-        bmr = 10 * currentWeight + 6.25 * height - 5 * 30 + 5;
+      if (gender === 'male') {
+        bmr = 10 * currentWeight + 6.25 * height - 5 * age + 5;
       } else {
-        bmr = 10 * currentWeight + 6.25 * height - 5 * 30 - 161;
+        bmr = 10 * currentWeight + 6.25 * height - 5 * age - 161;
       }
 
-      let activityFactor = 1.2;
-      if (steps) activityFactor += 0.2;
-      if (weightTraining) activityFactor += 0.3;
+      // Activity factor
+      let activityFactor = 1.2; // sedentary
+      if (steps) activityFactor += 0.2; // walking 12k steps daily
+      if (weightTraining) activityFactor += 0.3; // weight training
 
       const dailyCalories = Math.round(bmr * activityFactor);
-      const protein = Math.round(goalWeight * 2);
-      const fats = Math.round(goalWeight * 1);
+
+      // Macronutrient breakdown based on goal weight
+      const protein = Math.round(goalWeight * 2); // 2g per kg protein
+      const fats = Math.round(goalWeight * 1);    // 1g per kg fat
       const carbs = Math.round((dailyCalories - (protein * 4 + fats * 9)) / 4);
 
-      const mealCalories = Math.round(dailyCalories / 3);
-      const mealProtein = Math.round(protein / 3);
-      const mealFats = Math.round(fats / 3);
-      const mealCarbs = Math.round(carbs / 3);
+      // Simple budget-friendly meal suggestions
+      const meals = generateMealPlan(protein, fats, carbs);
 
-      const meals = [
-        { name: "Meal 1: Chicken Salad", price: "£3.50" },
-        { name: "Meal 2: Tuna & Rice", price: "£2.80" },
-        { name: "Meal 3: Greek Yogurt + Berries", price: "£1.90" },
-      ];
-
-      let mealHTML = "<h4>Suggested Meals:</h4><ul>";
-      meals.forEach(meal => {
-        mealHTML += `<li><strong>${meal.name}</strong> – ${mealCalories} kcal • ${mealProtein}g P / ${mealFats}g F / ${mealCarbs}g C – ${meal.price}</li>`;
-      });
-      mealHTML += "</ul>";
-
-      document.getElementById("results").innerHTML = `
-        <h3>Results</h3>
-        <p><strong>Daily Calories:</strong> ${dailyCalories} kcal</p>
-        <p><strong>Protein:</strong> ${protein}g</p>
-        <p><strong>Fats:</strong> ${fats}g</p>
-        <p><strong>Carbs:</strong> ${carbs}g</p>
-        ${mealHTML}
+      // Output results
+      const resultsDiv = document.getElementById('results');
+      resultsDiv.innerHTML = `
+        <h3>Your Daily Macro & Calories Summary</h3>
+        <p><strong>Calories:</strong> ${dailyCalories} kcal</p>
+        <p><strong>Protein:</strong> ${protein} g</p>
+        <p><strong>Fats:</strong> ${fats} g</p>
+        <p><strong>Carbs:</strong> ${carbs} g</p>
+        <div class="meal-plan">
+          <h4>Simple Budget-Friendly Meal Plan</h4>
+          <ul>
+            ${meals.map(meal => `
+              <li>
+                <strong>${meal.name}:</strong> ${meal.protein}g Protein, ${meal.fats}g Fat, ${meal.carbs}g Carbs
+              </li>
+            `).join('')}
+          </ul>
+        </div>
       `;
+    }
+
+    function generateMealPlan(protein, fats, carbs) {
+      // Divide macros roughly into 3 meals and 2 snacks
+      const meals = [
+        {
+          name: 'Breakfast - Oatmeal & Eggs',
+          protein: Math.round(protein * 0.3),
+          fats: Math.round(fats * 0.25),
+          carbs: Math.round(carbs * 0.35),
+        },
+        {
+          name: 'Lunch - Chicken, Rice & Veg',
+          protein: Math.round(protein * 0.3),
+          fats: Math.round(fats * 0.3),
+          carbs: Math.round(carbs * 0.35),
+        },
+        {
+          name: 'Dinner - Tuna Salad',
+          protein: Math.round(protein * 0.25),
+          fats: Math.round(fats * 0.3),
+          carbs: Math.round(carbs * 0.2),
+        },
+        {
+          name: 'Snack 1 - Greek Yogurt',
+          protein: Math.round(protein * 0.1),
+          fats: Math.round(fats * 0.05),
+          carbs: Math.round(carbs * 0.05),
+        },
+        {
+          name: 'Snack 2 - Almonds',
+          protein: Math.round(protein * 0.05),
+          fats: Math.round(fats * 0.1),
+          carbs: Math.round(carbs * 0.05),
+        }
+      ];
+      return meals;
     }
   </script>
 </body>
