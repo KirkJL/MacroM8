@@ -12,12 +12,13 @@
     }
     body {
       margin: 0;
-      padding: 40px 20px;
+      padding: 0;
       background: #f3f4f6;
       color: #111827;
       display: flex;
       justify-content: center;
       align-items: flex-start;
+      padding: 40px 20px;
     }
     .container {
       background: white;
@@ -31,7 +32,7 @@
       font-size: 28px;
       margin-bottom: 24px;
       text-align: center;
-      color: blue;
+      color: #2563eb;
     }
     .row {
       display: flex;
@@ -71,6 +72,7 @@
     }
     .checkbox-item input[type="checkbox"] {
       transform: scale(1.2);
+      margin-left: 10px;
     }
     button {
       background: #2563eb;
@@ -93,7 +95,7 @@
     <form onsubmit="event.preventDefault(); calculateMacros();">
       <div class="row">
         <label>
-          <select name="gender" id="gender">
+          <select name="gender" id="gender" required>
             <option value="" disabled selected>Sex</option>
             <option value="male">Male</option>
             <option value="female">Female</option>
@@ -127,109 +129,61 @@
   </div>
 
   <script>
-  function calculateMacros() {
-    const gender = document.getElementById("gender").value;
-    const height = parseFloat(document.getElementById("height").value);
-    const currentWeight = parseFloat(document.getElementById("currentWeight").value);
-    const goalWeight = parseFloat(document.getElementById("goalWeight").value);
-    const weightTraining = document.getElementById("weightTraining").checked;
-    const steps = document.getElementById("steps").checked;
+    function calculateMacros() {
+      const gender = document.getElementById("gender").value;
+      const height = parseFloat(document.getElementById("height").value);
+      const currentWeight = parseFloat(document.getElementById("currentWeight").value);
+      const goalWeight = parseFloat(document.getElementById("goalWeight").value);
+      const weightTraining = document.getElementById("weightTraining").checked;
+      const steps = document.getElementById("steps").checked;
 
-    if (!gender || !height || !currentWeight || !goalWeight) {
-      alert("Please fill in all fields.");
-      return;
-    }
-
-    let bmr;
-    if (gender === "male") {
-      bmr = 10 * currentWeight + 6.25 * height - 5 * 30 + 5;
-    } else {
-      bmr = 10 * currentWeight + 6.25 * height - 5 * 30 - 161;
-    }
-
-    let activityFactor = 1.2;
-    if (steps) activityFactor += 0.2;
-    if (weightTraining) activityFactor += 0.3;
-
-    const dailyCalories = Math.round(bmr * activityFactor);
-    const protein = Math.round(goalWeight * 2);       // 2g per kg of goal weight
-    const fats = Math.round(goalWeight * 1);          // 1g per kg of goal weight
-    const carbs = Math.round((dailyCalories - (protein * 4 + fats * 9)) / 4);
-
-    const mealHTML = suggestMeals(protein, fats, carbs, dailyCalories);
-
-    document.getElementById("results").innerHTML = `
-      <h3>Results</h3>
-      <p><strong>Daily Calories:</strong> ${dailyCalories} kcal</p>
-      <p><strong>Protein:</strong> ${protein}g</p>
-      <p><strong>Fats:</strong> ${fats}g</p>
-      <p><strong>Carbs:</strong> ${carbs}g</p>
-      <hr/>
-      ${mealHTML}
-    `;
-  }
-
-  function suggestMeals(protein, fats, carbs, calories) {
-    const mealPlan = {
-      breakfast: {
-        title: "Breakfast",
-        protein: Math.round(protein * 0.25),
-        fats: Math.round(fats * 0.25),
-        carbs: Math.round(carbs * 0.25),
-        ideas: [
-          "Oats with whey protein, peanut butter, and banana",
-          "Greek yogurt with berries and granola",
-          "Scrambled eggs on wholegrain toast"
-        ]
-      },
-      lunch: {
-        title: "Lunch",
-        protein: Math.round(protein * 0.3),
-        fats: Math.round(fats * 0.3),
-        carbs: Math.round(carbs * 0.3),
-        ideas: [
-          "Grilled chicken wrap with hummus and salad",
-          "Tuna pasta salad with olive oil dressing",
-          "Turkey sandwich with avocado and spinach"
-        ]
-      },
-      dinner: {
-        title: "Dinner",
-        protein: Math.round(protein * 0.3),
-        fats: Math.round(fats * 0.3),
-        carbs: Math.round(carbs * 0.3),
-        ideas: [
-          "Salmon, sweet potato, and steamed broccoli",
-          "Lean beef stir fry with rice noodles",
-          "Grilled tofu curry with jasmine rice"
-        ]
-      },
-      snack: {
-        title: "Snack",
-        protein: Math.round(protein * 0.15),
-        fats: Math.round(fats * 0.15),
-        carbs: Math.round(carbs * 0.15),
-        ideas: [
-          "Protein shake and a banana",
-          "Cottage cheese with pineapple",
-          "Boiled eggs with rice cakes"
-        ]
+      if (!gender || !height || !currentWeight || !goalWeight) {
+        alert("Please fill in all fields.");
+        return;
       }
-    };
 
-    let html = `<h3>Suggested Meals for the Day 🍽️</h3>`;
-    Object.values(mealPlan).forEach(meal => {
-      html += `
-        <div style="margin-bottom:16px;">
-          <strong>${meal.title}</strong><br/>
-          Protein: ${meal.protein}g, Fats: ${meal.fats}g, Carbs: ${meal.carbs}g<br/>
-          Example: ${meal.ideas[Math.floor(Math.random() * meal.ideas.length)]}
-        </div>
+      let bmr;
+      if (gender === "male") {
+        bmr = 10 * currentWeight + 6.25 * height - 5 * 30 + 5;
+      } else {
+        bmr = 10 * currentWeight + 6.25 * height - 5 * 30 - 161;
+      }
+
+      let activityFactor = 1.2;
+      if (steps) activityFactor += 0.2;
+      if (weightTraining) activityFactor += 0.3;
+
+      const dailyCalories = Math.round(bmr * activityFactor);
+      const protein = Math.round(goalWeight * 2);
+      const fats = Math.round(goalWeight * 1);
+      const carbs = Math.round((dailyCalories - (protein * 4 + fats * 9)) / 4);
+
+      const mealCalories = Math.round(dailyCalories / 3);
+      const mealProtein = Math.round(protein / 3);
+      const mealFats = Math.round(fats / 3);
+      const mealCarbs = Math.round(carbs / 3);
+
+      const meals = [
+        { name: "Meal 1: Chicken Salad", price: "£3.50" },
+        { name: "Meal 2: Tuna & Rice", price: "£2.80" },
+        { name: "Meal 3: Greek Yogurt + Berries", price: "£1.90" },
+      ];
+
+      let mealHTML = "<h4>Suggested Meals:</h4><ul>";
+      meals.forEach(meal => {
+        mealHTML += `<li><strong>${meal.name}</strong> – ${mealCalories} kcal • ${mealProtein}g P / ${mealFats}g F / ${mealCarbs}g C – ${meal.price}</li>`;
+      });
+      mealHTML += "</ul>";
+
+      document.getElementById("results").innerHTML = `
+        <h3>Results</h3>
+        <p><strong>Daily Calories:</strong> ${dailyCalories} kcal</p>
+        <p><strong>Protein:</strong> ${protein}g</p>
+        <p><strong>Fats:</strong> ${fats}g</p>
+        <p><strong>Carbs:</strong> ${carbs}g</p>
+        ${mealHTML}
       `;
-    });
-
-    return html;
-  }
+    }
   </script>
 </body>
 </html>
