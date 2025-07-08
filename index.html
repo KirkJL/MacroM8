@@ -28,6 +28,7 @@
       margin-top: 0.3rem;
       border: 1px solid #ccc;
       border-radius: 5px;
+      box-sizing: border-box;
     }
     .form-row {
       display: flex;
@@ -39,15 +40,21 @@
     }
     .checkbox-row {
       display: flex;
-      flex-direction: column;
-      gap: 0.8rem;
-      margin-top: 1.5rem;
+      justify-content: space-between;
+      margin-top: 2rem;
+      gap: 1rem;
     }
     .checkbox-row label {
       display: flex;
+      justify-content: space-between;
       align-items: center;
+      flex: 1;
+      background: #fff;
+      padding: 0.8rem 1rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
       font-weight: normal;
-      gap: 0.5rem;
     }
     .output {
       background: #fff;
@@ -104,9 +111,9 @@
       </select>
     </div>
   </div>  <div class="checkbox-row">
-    <label><input type="checkbox" id="steps" /> 12k Daily Steps</label>
-    <label><input type="checkbox" id="training" /> Weight Training</label>
-    <label><input type="checkbox" id="carbCycling" /> Carb Cycling</label>
+    <label>12k Daily Steps <input type="checkbox" id="steps" /></label>
+    <label>Weight Training <input type="checkbox" id="training" /></label>
+    <label>Carb Cycling <input type="checkbox" id="carbCycling" /></label>
   </div><button onclick="calculateMacros()">Calculate</button>
 
   <div class="output" id="output"></div>  <script>
