@@ -1,262 +1,318 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>MacroM8 - Diet Macro Calculator</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
-  <style>
-    * {
-      box-sizing: border-box;
-      font-family: 'Inter', sans-serif;
-    }
-    body {
-      margin: 0;
-      padding: 40px 20px;
-      background: #f3f4f6;
-      color: #111827;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-    }
-    .container {
-      background: white;
-      padding: 30px;
-      border-radius: 16px;
-      max-width: 600px;
-      width: 100%;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    }
-    h1 {
-      font-size: 28px;
-      margin-bottom: 24px;
-      text-align: center;
-      color: #2563eb; /* blue header */
-    }
-    .row {
-      display: flex;
-      gap: 20px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-    .row label {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      font-weight: 600;
-    }
-    label input, label select {
-      padding: 10px;
-      margin-top: 8px;
-      border: 1px solid #d1d5db;
-      border-radius: 8px;
-      font-size: 16px;
-    }
-    .checkbox-group {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      margin-bottom: 24px;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>MacroM8 - Full Macro Calculator</title>
+<style>
+  /* Basic reset */
+  * {
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+  }
+  body {
+    background: #f3f4f6;
+    margin: 0;
+    padding: 40px 20px;
+    display: flex;
+    justify-content: center;
+  }
+  .container {
+    background: white;
+    padding: 30px;
+    max-width: 650px;
+    width: 100%;
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgb(0 0 0 / 0.1);
+  }
+  h1 {
+    text-align: center;
+    color: #2563eb; /* blue header */
+    margin-bottom: 25px;
+  }
+  form {
+    display: grid;
+    gap: 20px;
+  }
+  label {
+    display: flex;
+    flex-direction: column;
+    font-weight: 600;
+  }
+  input[type=number], select {
+    margin-top: 8px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    font-size: 16px;
+  }
+  .checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  .checkbox-item {
+    display: flex;
+    justify-content: space-between;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    padding: 12px 15px;
+    border-radius: 8px;
+    align-items: center;
+    font-weight: 600;
+    font-size: 16px;
+  }
+  .checkbox-item label {
+    order: 1;
+  }
+  .checkbox-item input[type=checkbox] {
+    order: 2;
+    transform: scale(1.2);
+    cursor: pointer;
+  }
+  button {
+    background: #2563eb;
+    color: white;
+    padding: 16px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  button:hover {
+    background: #1e40af;
+  }
+  #results {
+    margin-top: 28px;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  #results h3 {
+    color: #2563eb;
+    margin-bottom: 15px;
+  }
+  .meal-plan {
+    background: #eef4ff;
+    padding: 18px;
+    border-radius: 12px;
+    border: 1px solid #c1d1ff;
+    margin-top: 15px;
+  }
+  .meal-plan h4 {
+    margin-bottom: 12px;
+    font-weight: 700;
+    color: #1d4ed8;
+  }
+  .meal-plan ul {
+    list-style-type: disc;
+    margin-left: 20px;
+  }
+  @media (max-width: 480px) {
     .checkbox-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 16px;
-      background: #f9fafb;
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
-      font-weight: 500;
-      font-size: 16px;
+      font-size: 14px;
+      padding: 10px;
     }
-    .checkbox-item label {
-      order: 1;
-      margin-left: 0;
+    input[type=number], select {
+      font-size: 14px;
+      padding: 8px;
     }
-    .checkbox-item input[type="checkbox"] {
-      order: 2;
-      transform: scale(1.2);
-      margin-left: 8px;
-      cursor: pointer;
-    }
-    button {
-      background: #2563eb;
-      color: white;
-      padding: 14px;
-      border: none;
-      border-radius: 8px;
-      font-weight: 600;
-      cursor: pointer;
-      width: 100%;
-      font-size: 18px;
-      transition: background-color 0.3s ease;
-    }
-    button:hover {
-      background: #1e40af;
-    }
-    #results {
-      margin-top: 28px;
-      font-size: 16px;
-      line-height: 1.5;
-    }
-    #results h3 {
-      margin-bottom: 12px;
-      color: #2563eb;
-    }
-    .meal-plan {
-      margin-top: 12px;
-      background: #eef4ff;
-      padding: 16px;
-      border-radius: 10px;
-      border: 1px solid #c1d1ff;
-    }
-    .meal-plan h4 {
-      margin-bottom: 8px;
-      font-weight: 600;
-      color: #1d4ed8;
-    }
-    .meal-plan ul {
-      list-style-type: disc;
-      margin-left: 20px;
-      padding-left: 0;
-    }
-  </style>
+  }
+</style>
 </head>
 <body>
-  <div class="container">
-    <h1>MacroM8 - Diet Macro Calculator</h1>
-    <form id="macroForm" onsubmit="event.preventDefault(); calculateMacros();">
-      <div class="row">
-        <label>
-          <select id="gender" required>
-            <option value="" disabled selected>Sex</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-          </select>
-        </label>
-        <label>
-          <input type="number" id="height" placeholder="Height (cm)" required min="50" max="250" />
-        </label>
+
+<div class="container">
+  <h1>MacroM8 - Full Macro Calculator</h1>
+  <form id="macroForm" onsubmit="event.preventDefault(); calculateMacros();">
+
+    <label>
+      Sex:
+      <select id="gender" required>
+        <option value="" disabled selected>Select sex</option>
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+      </select>
+    </label>
+
+    <label>
+      Age (years):
+      <input type="number" id="age" min="10" max="100" required placeholder="e.g. 30" />
+    </label>
+
+    <label>
+      Height (cm):
+      <input type="number" id="height" min="50" max="250" required placeholder="e.g. 175" />
+    </label>
+
+    <label>
+      Current Weight (kg):
+      <input type="number" id="currentWeight" min="20" max="300" required placeholder="e.g. 80" />
+    </label>
+
+    <label>
+      Goal Weight (kg):
+      <input type="number" id="goalWeight" min="20" max="300" required placeholder="e.g. 75" />
+    </label>
+
+    <div class="checkbox-group">
+      <div class="checkbox-item">
+        <label for="weightTraining">Weight Training</label>
+        <input type="checkbox" id="weightTraining" />
       </div>
-      <div class="row">
-        <label>
-          <input type="number" id="currentWeight" placeholder="Current Weight (kg)" required min="20" max="300" />
-        </label>
-        <label>
-          <input type="number" id="goalWeight" placeholder="Goal Weight (kg)" required min="20" max="300" />
-        </label>
+      <div class="checkbox-item">
+        <label for="steps">12K Daily Steps</label>
+        <input type="checkbox" id="steps" />
       </div>
-      <div class="checkbox-group">
-        <div class="checkbox-item">
-          <label for="weightTraining">Include Weight Training</label>
-          <input type="checkbox" id="weightTraining" />
-        </div>
-        <div class="checkbox-item">
-          <label for="steps">12K Daily Steps</label>
-          <input type="checkbox" id="steps" />
-        </div>
-      </div>
-      <button type="submit">Calculate</button>
-    </form>
-    <div id="results"></div>
-  </div>
+    </div>
 
-  <script>
-    function calculateMacros() {
-      const gender = document.getElementById('gender').value;
-      const height = parseFloat(document.getElementById('height').value);
-      const currentWeight = parseFloat(document.getElementById('currentWeight').value);
-      const goalWeight = parseFloat(document.getElementById('goalWeight').value);
-      const weightTraining = document.getElementById('weightTraining').checked;
-      const steps = document.getElementById('steps').checked;
+    <label>
+      Exercise Level:
+      <select id="exerciseLevel" required>
+        <option value="" disabled selected>Select exercise level</option>
+        <option value="light">Light</option>
+        <option value="moderate">Moderate</option>
+        <option value="intense">Intense</option>
+      </select>
+    </label>
 
-      if (!gender || !height || !currentWeight || !goalWeight) {
-        alert('Please fill in all fields correctly.');
-        return;
-      }
+    <button type="submit">Calculate Macros</button>
+  </form>
 
-      // Calculate BMR using Mifflin-St Jeor Equation
-      // Assuming age fixed at 30 for simplicity as age input not requested
-      const age = 30;
-      let bmr;
-      if (gender === 'male') {
-        bmr = 10 * currentWeight + 6.25 * height - 5 * age + 5;
-      } else {
-        bmr = 10 * currentWeight + 6.25 * height - 5 * age - 161;
-      }
+  <div id="results"></div>
+</div>
 
-      // Activity factor
-      let activityFactor = 1.2; // sedentary
-      if (steps) activityFactor += 0.2; // walking 12k steps daily
-      if (weightTraining) activityFactor += 0.3; // weight training
+<script>
+  function calculateMacros() {
+  // Get form values
+  const gender = document.getElementById('gender').value;
+  const age = parseInt(document.getElementById('age').value);
+  const height = parseFloat(document.getElementById('height').value);
+  const currentWeight = parseFloat(document.getElementById('currentWeight').value);
+  const goalWeight = parseFloat(document.getElementById('goalWeight').value);
+  const weightTraining = document.getElementById('weightTraining').checked;
+  const steps = document.getElementById('steps').checked;
+  const exerciseLevel = document.getElementById('exerciseLevel').value;
 
-      const dailyCalories = Math.round(bmr * activityFactor);
+  // Validate inputs
+  if (
+    !gender || isNaN(age) || isNaN(height) || isNaN(currentWeight) || isNaN(goalWeight) ||
+    !exerciseLevel
+  ) {
+    alert('Please fill out all fields correctly.');
+    return;
+  }
 
-      // Macronutrient breakdown based on goal weight
-      const protein = Math.round(goalWeight * 2); // 2g per kg protein
-      const fats = Math.round(goalWeight * 1);    // 1g per kg fat
-      const carbs = Math.round((dailyCalories - (protein * 4 + fats * 9)) / 4);
+  // Calculate BMR (Mifflin-St Jeor Equation)
+  let bmr;
+  if (gender === 'male') {
+    bmr = 10 * currentWeight + 6.25 * height - 5 * age + 5;
+  } else {
+    bmr = 10 * currentWeight + 6.25 * height - 5 * age - 161;
+  }
 
-      // Simple budget-friendly meal suggestions
-      const meals = generateMealPlan(protein, fats, carbs);
+  // Activity multiplier based on exercise level + checkboxes
+  let activityMultiplier = 1.2; // sedentary baseline
 
-      // Output results
-      const resultsDiv = document.getElementById('results');
-      resultsDiv.innerHTML = `
-        <h3>Your Daily Macro & Calories Summary</h3>
-        <p><strong>Calories:</strong> ${dailyCalories} kcal</p>
-        <p><strong>Protein:</strong> ${protein} g</p>
-        <p><strong>Fats:</strong> ${fats} g</p>
-        <p><strong>Carbs:</strong> ${carbs} g</p>
-        <div class="meal-plan">
-          <h4>Simple Budget-Friendly Meal Plan</h4>
-          <ul>
-            ${meals.map(meal => `
-              <li>
-                <strong>${meal.name}:</strong> ${meal.protein}g Protein, ${meal.fats}g Fat, ${meal.carbs}g Carbs
-              </li>
-            `).join('')}
-          </ul>
-        </div>
-      `;
-    }
+  switch (exerciseLevel) {
+    case 'light':
+      activityMultiplier = 1.375;
+      break;
+    case 'moderate':
+      activityMultiplier = 1.55;
+      break;
+    case 'intense':
+      activityMultiplier = 1.725;
+      break;
+  }
 
-    function generateMealPlan(protein, fats, carbs) {
-      // Divide macros roughly into 3 meals and 2 snacks
-      const meals = [
-        {
-          name: 'Breakfast - Oatmeal & Eggs',
-          protein: Math.round(protein * 0.3),
-          fats: Math.round(fats * 0.25),
-          carbs: Math.round(carbs * 0.35),
-        },
-        {
-          name: 'Lunch - Chicken, Rice & Veg',
-          protein: Math.round(protein * 0.3),
-          fats: Math.round(fats * 0.3),
-          carbs: Math.round(carbs * 0.35),
-        },
-        {
-          name: 'Dinner - Tuna Salad',
-          protein: Math.round(protein * 0.25),
-          fats: Math.round(fats * 0.3),
-          carbs: Math.round(carbs * 0.2),
-        },
-        {
-          name: 'Snack 1 - Greek Yogurt',
-          protein: Math.round(protein * 0.1),
-          fats: Math.round(fats * 0.05),
-          carbs: Math.round(carbs * 0.05),
-        },
-        {
-          name: 'Snack 2 - Almonds',
-          protein: Math.round(protein * 0.05),
-          fats: Math.round(fats * 0.1),
-          carbs: Math.round(carbs * 0.05),
-        }
-      ];
-      return meals;
-    }
-  </script>
+  // Add activity factors for weight training and steps (each adds +0.1)
+  if (weightTraining) activityMultiplier += 0.1;
+  if (steps) activityMultiplier += 0.1;
+
+  // Cap multiplier at 2 to keep sane values
+  if (activityMultiplier > 2) activityMultiplier = 2;
+
+  // Calculate daily calories needed
+  const dailyCalories = Math.round(bmr * activityMultiplier);
+
+  // Calculate macros based on goal weight
+  const protein = Math.round(goalWeight * 2);  // 2 grams protein per kg goal weight
+  const fats = Math.round(goalWeight * 1);     // 1 gram fat per kg goal weight
+
+  // Carbs = leftover calories after protein and fats
+  const caloriesFromProteinAndFats = protein * 4 + fats * 9;
+  const remainingCalories = dailyCalories - caloriesFromProteinAndFats;
+  const carbs = Math.round(remainingCalories / 4);
+
+  // Build meal plan (5 meals/snacks) splitting macros roughly
+  const mealPlan = buildMealPlan(protein, fats, carbs);
+
+  // Create daily summary HTML
+  const dailySummary = `
+    <h3>Your Daily Macro & Calorie Summary</h3>
+    <p><strong>Calories:</strong> ${dailyCalories} kcal</p>
+    <p><strong>Protein:</strong> ${protein} g</p>
+    <p><strong>Fats:</strong> ${fats} g</p>
+    <p><strong>Carbs:</strong> ${carbs} g</p>
+  `;
+
+  // Create meal plan HTML list
+  let mealPlanHTML = `
+    <div class="meal-plan">
+      <h4>Budget-Friendly Meal Plan</h4>
+      <ul>
+        ${mealPlan
+          .map(
+            meal =>
+              `<li><strong>${meal.name}:</strong> ${meal.protein}g Protein, ${meal.fats}g Fat, ${meal.carbs}g Carbs</li>`
+          )
+          .join('')}
+      </ul>
+    </div>
+  `;
+
+  // Output results
+  document.getElementById('results').innerHTML = dailySummary + mealPlanHTML;
+}
+
+// Helper function to split macros into meals and snacks
+function buildMealPlan(protein, fats, carbs) {
+  return [
+    {
+      name: 'Breakfast - Oatmeal & Eggs',
+      protein: Math.round(protein * 0.3),
+      fats: Math.round(fats * 0.25),
+      carbs: Math.round(carbs * 0.35),
+    },
+    {
+      name: 'Lunch - Chicken, Rice & Veg',
+      protein: Math.round(protein * 0.3),
+      fats: Math.round(fats * 0.3),
+      carbs: Math.round(carbs * 0.35),
+    },
+    {
+      name: 'Dinner - Tuna Salad',
+      protein: Math.round(protein * 0.25),
+      fats: Math.round(fats * 0.3),
+      carbs: Math.round(carbs * 0.2),
+    },
+    {
+      name: 'Snack 1 - Greek Yogurt',
+      protein: Math.round(protein * 0.1),
+      fats: Math.round(fats * 0.05),
+      carbs: Math.round(carbs * 0.05),
+    },
+    {
+      name: 'Snack 2 - Almonds',
+      protein: Math.round(protein * 0.05),
+      fats: Math.round(fats * 0.1),
+      carbs: Math.round(carbs * 0.05),
+    },
+  ];
+}
+</script>
 </body>
 </html>
+  
