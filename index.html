@@ -182,136 +182,155 @@
 
   <div id="results"></div>
 </div>
-
 <script>
   function calculateMacros() {
-  // Get form values
-  const gender = document.getElementById('gender').value;
-  const age = parseInt(document.getElementById('age').value);
-  const height = parseFloat(document.getElementById('height').value);
-  const currentWeight = parseFloat(document.getElementById('currentWeight').value);
-  const goalWeight = parseFloat(document.getElementById('goalWeight').value);
-  const weightTraining = document.getElementById('weightTraining').checked;
-  const steps = document.getElementById('steps').checked;
-  const exerciseLevel = document.getElementById('exerciseLevel').value;
+    // Get form values
+    const gender = document.getElementById('gender').value;
+    const age = parseInt(document.getElementById('age').value);
+    const height = parseFloat(document.getElementById('height').value);
+    const currentWeight = parseFloat(document.getElementById('currentWeight').value);
+    const goalWeight = parseFloat(document.getElementById('goalWeight').value);
+    const weightTraining = document.getElementById('weightTraining').checked;
+    const steps = document.getElementById('steps').checked;
+    const exerciseLevel = document.getElementById('exerciseLevel').value;
 
-  // Validate inputs
-  if (
-    !gender || isNaN(age) || isNaN(height) || isNaN(currentWeight) || isNaN(goalWeight) ||
-    !exerciseLevel
-  ) {
-    alert('Please fill out all fields correctly.');
-    return;
+    // Validate inputs
+    if (
+      !gender || isNaN(age) || isNaN(height) || isNaN(currentWeight) || isNaN(goalWeight) ||
+      !exerciseLevel
+    ) {
+      alert('Please fill out all fields correctly.');
+      return;
+    }
+
+    // Calculate BMR (Mifflin-St Jeor Equation)
+    let bmr;
+    if (gender === 'male') {
+      bmr = 10 * currentWeight + 6.25 * height - 5 * age + 5;
+    } else {
+      bmr = 10 * currentWeight + 6.25 * height - 5 * age - 161;
+    }
+
+    // Activity multiplier based on exercise level + checkboxes
+    let activityMultiplier = 1.2; // sedentary baseline
+
+    switch (exerciseLevel) {
+      case 'light':
+        activityMultiplier = 1.375;
+        break;
+      case 'moderate':
+        activityMultiplier = 1.55;
+        break;
+      case 'intense':
+        activityMultiplier = 1.725;
+        break;
+    }
+
+    // Add activity factors for weight training and steps (each adds +0.1)
+    if (weightTraining) activityMultiplier += 0.1;
+    if (steps) activityMultiplier += 0.1;
+
+    // Cap multiplier at 2 to keep sane values
+    if (activityMultiplier > 2) activityMultiplier = 2;
+
+    // Calculate maintenance calories
+    const maintenanceCalories = bmr * activityMultiplier;
+
+    // Define calorie adjustment for cut or bulk
+    let calorieAdjustment = 0;
+
+    if (goalWeight < currentWeight) {
+      // Cutting - 20% deficit
+      calorieAdjustment = -Math.round(maintenanceCalories * 0.20);
+    } else if (goalWeight > currentWeight) {
+      // Bulking - 15% surplus
+      calorieAdjustment = Math.round(maintenanceCalories * 0.15);
+    } else {
+      // Maintenance - no adjustment
+      calorieAdjustment = 0;
+    }
+
+    // Calculate final daily calories target
+    const dailyCalories = Math.round(maintenanceCalories + calorieAdjustment);
+
+    // Calculate macros based on goal weight
+    const protein = Math.round(goalWeight * 2);  // 2g protein per kg goal weight
+    const fats = Math.round(goalWeight * 1);     // 1g fat per kg goal weight
+
+    // Calories from protein and fats
+    const caloriesFromProteinAndFats = protein * 4 + fats * 9;
+
+    // Remaining calories for carbs
+    const remainingCalories = dailyCalories - caloriesFromProteinAndFats;
+    const carbs = Math.round(remainingCalories / 4);
+
+    // Build meal plan (5 meals/snacks) splitting macros roughly
+    const mealPlan = buildMealPlan(protein, fats, carbs);
+
+    // Create daily summary HTML
+    const dailySummary = `
+      <h3>Your Daily Macro & Calorie Summary</h3>
+      <p><strong>Calories:</strong> ${dailyCalories} kcal</p>
+      <p><strong>Protein:</strong> ${protein} g</p>
+      <p><strong>Fats:</strong> ${fats} g</p>
+      <p><strong>Carbs:</strong> ${carbs} g</p>
+      <p><em>${goalWeight < currentWeight ? 'Cutting: 20% calorie deficit applied' : goalWeight > currentWeight ? 'Bulking: 15% calorie surplus applied' : 'Maintenance: No calorie adjustment'}</em></p>
+    `;
+
+    // Create meal plan HTML list
+    let mealPlanHTML = `
+      <div class="meal-plan">
+        <h4>Budget-Friendly Meal Plan</h4>
+        <ul>
+          ${mealPlan
+            .map(
+              meal =>
+                `<li><strong>${meal.name}:</strong> ${meal.protein}g Protein, ${meal.fats}g Fat, ${meal.carbs}g Carbs</li>`
+            )
+            .join('')}
+        </ul>
+      </div>
+    `;
+
+    // Output results
+    document.getElementById('results').innerHTML = dailySummary + mealPlanHTML;
   }
 
-  // Calculate BMR (Mifflin-St Jeor Equation)
-  let bmr;
-  if (gender === 'male') {
-    bmr = 10 * currentWeight + 6.25 * height - 5 * age + 5;
-  } else {
-    bmr = 10 * currentWeight + 6.25 * height - 5 * age - 161;
+  // Helper function to split macros into meals and snacks
+  function buildMealPlan(protein, fats, carbs) {
+    return [
+      {
+        name: 'Breakfast - Oatmeal & Eggs',
+        protein: Math.round(protein * 0.3),
+        fats: Math.round(fats * 0.25),
+        carbs: Math.round(carbs * 0.35),
+      },
+      {
+        name: 'Lunch - Chicken, Rice & Veg',
+        protein: Math.round(protein * 0.3),
+        fats: Math.round(fats * 0.3),
+        carbs: Math.round(carbs * 0.35),
+      },
+      {
+        name: 'Dinner - Tuna Salad',
+        protein: Math.round(protein * 0.25),
+        fats: Math.round(fats * 0.3),
+        carbs: Math.round(carbs * 0.2),
+      },
+      {
+        name: 'Snack 1 - Greek Yogurt',
+        protein: Math.round(protein * 0.1),
+        fats: Math.round(fats * 0.05),
+        carbs: Math.round(carbs * 0.05),
+      },
+      {
+        name: 'Snack 2 - Almonds',
+        protein: Math.round(protein * 0.05),
+        fats: Math.round(fats * 0.1),
+        carbs: Math.round(carbs * 0.05),
+      },
+    ];
   }
-
-  // Activity multiplier based on exercise level + checkboxes
-  let activityMultiplier = 1.2; // sedentary baseline
-
-  switch (exerciseLevel) {
-    case 'light':
-      activityMultiplier = 1.375;
-      break;
-    case 'moderate':
-      activityMultiplier = 1.55;
-      break;
-    case 'intense':
-      activityMultiplier = 1.725;
-      break;
-  }
-
-  // Add activity factors for weight training and steps (each adds +0.1)
-  if (weightTraining) activityMultiplier += 0.1;
-  if (steps) activityMultiplier += 0.1;
-
-  // Cap multiplier at 2 to keep sane values
-  if (activityMultiplier > 2) activityMultiplier = 2;
-
-  // Calculate daily calories needed
-  const dailyCalories = Math.round(bmr * activityMultiplier);
-
-  // Calculate macros based on goal weight
-  const protein = Math.round(goalWeight * 2);  // 2 grams protein per kg goal weight
-  const fats = Math.round(goalWeight * 1);     // 1 gram fat per kg goal weight
-
-  // Carbs = leftover calories after protein and fats
-  const caloriesFromProteinAndFats = protein * 4 + fats * 9;
-  const remainingCalories = dailyCalories - caloriesFromProteinAndFats;
-  const carbs = Math.round(remainingCalories / 4);
-
-  // Build meal plan (5 meals/snacks) splitting macros roughly
-  const mealPlan = buildMealPlan(protein, fats, carbs);
-
-  // Create daily summary HTML
-  const dailySummary = `
-    <h3>Your Daily Macro & Calorie Summary</h3>
-    <p><strong>Calories:</strong> ${dailyCalories} kcal</p>
-    <p><strong>Protein:</strong> ${protein} g</p>
-    <p><strong>Fats:</strong> ${fats} g</p>
-    <p><strong>Carbs:</strong> ${carbs} g</p>
-  `;
-
-  // Create meal plan HTML list
-  let mealPlanHTML = `
-    <div class="meal-plan">
-      <h4>Budget-Friendly Meal Plan</h4>
-      <ul>
-        ${mealPlan
-          .map(
-            meal =>
-              `<li><strong>${meal.name}:</strong> ${meal.protein}g Protein, ${meal.fats}g Fat, ${meal.carbs}g Carbs</li>`
-          )
-          .join('')}
-      </ul>
-    </div>
-  `;
-
-  // Output results
-  document.getElementById('results').innerHTML = dailySummary + mealPlanHTML;
-}
-
-// Helper function to split macros into meals and snacks
-function buildMealPlan(protein, fats, carbs) {
-  return [
-    {
-      name: 'Breakfast - Oatmeal & Eggs',
-      protein: Math.round(protein * 0.3),
-      fats: Math.round(fats * 0.25),
-      carbs: Math.round(carbs * 0.35),
-    },
-    {
-      name: 'Lunch - Chicken, Rice & Veg',
-      protein: Math.round(protein * 0.3),
-      fats: Math.round(fats * 0.3),
-      carbs: Math.round(carbs * 0.35),
-    },
-    {
-      name: 'Dinner - Tuna Salad',
-      protein: Math.round(protein * 0.25),
-      fats: Math.round(fats * 0.3),
-      carbs: Math.round(carbs * 0.2),
-    },
-    {
-      name: 'Snack 1 - Greek Yogurt',
-      protein: Math.round(protein * 0.1),
-      fats: Math.round(fats * 0.05),
-      carbs: Math.round(carbs * 0.05),
-    },
-    {
-      name: 'Snack 2 - Almonds',
-      protein: Math.round(protein * 0.05),
-      fats: Math.round(fats * 0.1),
-      carbs: Math.round(carbs * 0.05),
-    },
-  ];
-}
 </script>
 </body>
 </html>
